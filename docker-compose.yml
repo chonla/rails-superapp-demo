@@ -1,0 +1,45 @@
+services:
+  subapp1:
+    build:
+      context: ./subapp1
+      dockerfile: Dockerfile.dev
+    environment:
+      RAILS_ENV: development
+      PORT: "3001"
+    ports:
+      - "3001:3001"
+    volumes:
+      - subapp1_storage:/rails/storage
+      - subapp1_tmp:/rails/tmp
+
+  subapp2:
+    build:
+      context: ./subapp2
+    environment:
+      PORT: "3002"
+    ports:
+      - "3002:3002"
+
+  superapp:
+    build:
+      context: ./superapp
+      dockerfile: Dockerfile.dev
+    environment:
+      RAILS_ENV: development
+      PORT: "3000"
+      SUBAPP1_BASEURL: http://subapp1:3001
+      SUBAPP2_BASEURL: http://subapp2:3002
+    ports:
+      - "3000:3000"
+    depends_on:
+      - subapp1
+      - subapp2
+    volumes:
+      - superapp_storage:/rails/storage
+      - superapp_tmp:/rails/tmp
+
+volumes:
+  subapp1_storage:
+  subapp1_tmp:
+  superapp_storage:
+  superapp_tmp:

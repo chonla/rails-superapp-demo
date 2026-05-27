@@ -79,7 +79,7 @@ Rails.application.configure do
   config.subapp_registries = [
     {
       :name => "subapp1",
-      :baseurl => "http://localhost:3001",
+      :baseurl => ENV.fetch("SUBAPP1_BASEURL", "http://localhost:3001"),
       :paths => [
         "/entrypoint",
         "/other_page",
@@ -87,6 +87,17 @@ Rails.application.configure do
       ],
       :metadata => {
         :title => "Application 1"
+      }
+    },
+    {
+      :name => "subapp2",
+      :baseurl => ENV.fetch("SUBAPP2_BASEURL", "http://localhost:3002"),
+      :paths => [
+        "/entrypoint",
+        "/clock"
+      ],
+      :metadata => {
+        :title => "Application 2"
       }
     }
   ]
