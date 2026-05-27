@@ -1,0 +1,13 @@
+<turbo-frame id="data_container">
+  <div data-controller="subapp-shadow">
+    <template shadowrootmode="open">
+      <%= stylesheet_link_tag "application", media: "all" %>
+      <div class="subapp-root">
+        <h1 class="text-lg">Sub App 1</h1>
+        <a href="/other_page" data-turbo-frame="data_container">
+          This link automatically updates "data_container"
+        </a>
+      </div>
+    </template>
+  </div>
+</turbo-frame>
