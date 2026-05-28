@@ -3,7 +3,8 @@ Rails.application.routes.draw do
 
   root "home#index"
 
-  get "subapps/:name/*path" => "subapps#show", as: :subapp_proxy, format: false
+  get "embeds/:name" => "subapps#embed", as: :subapp_embed
+  get "subapps/:name(/*exposed_path)" => "subapps#show", as: :subapp_proxy, format: false
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

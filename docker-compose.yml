@@ -20,6 +20,13 @@ services:
     ports:
       - "3002:3002"
 
+  subapp3:
+    build:
+      context: ./subapp3
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3003:3003"
+
   superapp:
     build:
       context: ./superapp
@@ -29,11 +36,13 @@ services:
       PORT: "3000"
       SUBAPP1_BASEURL: http://subapp1:3001
       SUBAPP2_BASEURL: http://subapp2:3002
+      SUBAPP3_BASEURL: http://localhost:3003
     ports:
       - "3000:3000"
     depends_on:
       - subapp1
       - subapp2
+      - subapp3
     volumes:
       - superapp_storage:/rails/storage
       - superapp_tmp:/rails/tmp

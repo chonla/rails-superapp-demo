@@ -24,11 +24,16 @@ class SubappsController < ApplicationController
 
   GLOB_FLAGS = File::FNM_PATHNAME | File::FNM_EXTGLOB
 
+  def embed
+    @subapp = Rails.application.config.subapp_registries.find { |s| s[:name] == params[:name] }
+    return head :not_found unless @subapp
+  end
+
   def show
     entry = Rails.application.config.subapp_registries.find { |s| s[:name] == params[:name] }
     return head :not_found unless entry
 
-    uri = URI.join(entry[:baseurl] + "/", params[:path].to_s)
+    uri = URI.join(entry[:baseurl], params[:exposed_path].to_s)
     upstream = Net::HTTP.start(uri.host, uri.port) do |http|
       req = Net::HTTP::Get.new(uri.request_uri)
       req["Accept"] = request.headers["Accept"].to_s
@@ -43,7 +48,7 @@ class SubappsController < ApplicationController
 
     content_type = upstream["content-type"] || "application/octet-stream"
     body = upstream.body
-    body = rewrite_html(body, entry) if content_type.start_with?("text/html")
+    body = rewrite_html(body, entry) if content_type.start_with?("text/html") && entry[:exposed_paths]&.any?
 
     render body: body, content_type: content_type, status: upstream.code.to_i
   end
@@ -53,7 +58,7 @@ class SubappsController < ApplicationController
   def rewrite_html(body, entry)
     doc = Nokogiri::HTML(body)
     prefix = "/subapps/#{entry[:name]}"
-    globs  = entry[:paths] || []
+    globs  = entry[:exposed_paths] || []
 
     URL_ATTRS.each do |tag, attrs|
       doc.css(tag).each do |node|

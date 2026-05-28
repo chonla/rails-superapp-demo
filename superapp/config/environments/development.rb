@@ -80,11 +80,13 @@ Rails.application.configure do
     {
       :name => "subapp1",
       :baseurl => ENV.fetch("SUBAPP1_BASEURL", "http://localhost:3001"),
-      :paths => [
+      :entrypoint => "/entrypoint",
+      :exposed_paths => [
         "/entrypoint",
         "/other_page",
         "/assets/**"
       ],
+      :integration => "turbo_frame",
       :metadata => {
         :title => "Application 1"
       }
@@ -92,14 +94,24 @@ Rails.application.configure do
     {
       :name => "subapp2",
       :baseurl => ENV.fetch("SUBAPP2_BASEURL", "http://localhost:3002"),
-      :paths => [
+      :entrypoint => "/entrypoint",
+      :exposed_paths => [
         "/entrypoint",
         "/clock"
       ],
+      :integration => "turbo_frame",
       :metadata => {
         :title => "Application 2"
       }
-    }
+    },
+    {
+      :name => "subapp3",
+      :baseurl => ENV.fetch("SUBAPP3_BASEURL", "http://localhost:3003"),
+      :integration => "iframe",
+      :metadata => {
+        :title => "Application 3 (Vue)"
+      }
+    },
   ]
 
 end

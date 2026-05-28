@@ -1,10 +1,13 @@
 <h1 class="text-2xl flex">
 <%= link_to "SuperApp Demo", root_path %>
 </h1>
-<turbo-frame id="data_container" class="flex flex-row w-full border rounded-sm mt-2 p-4 gap-2">
+<turbo-frame id="data_container" class="flex flex-row w-full h-full border rounded-sm mt-2 p-4 gap-2">
 <% Rails.application.config.subapp_registries.each do |subapp| %>
+    <% href = subapp[:integration] == "iframe" \
+              ? subapp_embed_path(subapp[:name]) \
+              : subapp_entry_path(subapp) %>
     <%= link_to subapp[:metadata][:title],
-        subapp_proxy_path(subapp[:name], "entrypoint"),
+        href,
         data: { turbo_frame: "data_container" },
         class: "border rounded-sm px-4 py-2 bg-slate-200 text-bold" %>
 <% end %>
